@@ -15,7 +15,7 @@ List<String> requiredFields = [
     'ecl',
     'pid'
 ]
-HashSet<String> fields = new HashSet();
+HashSet<String> fields = new HashSet()
 for(int i=0; i<size; i++) {
     boolean blankFlag = list[i].isBlank()
 
