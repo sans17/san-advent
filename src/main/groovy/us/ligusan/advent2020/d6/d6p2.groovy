@@ -8,7 +8,7 @@ int size = list.size()
 
 HashSet<Character> set = []
 
-boolean setEndFlag = true;
+boolean setEndFlag = true
 for(int i=0; i<size; i++) {
     boolean firstLineFlag = setEndFlag
     setEndFlag = list[i].isBlank()
