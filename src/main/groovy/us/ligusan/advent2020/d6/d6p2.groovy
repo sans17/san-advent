@@ -9,12 +9,12 @@ int size = list.size()
 HashSet<Character> set = []
 
 boolean setEndFlag = true
-for(int i=0; i<size; i++) {
+list.eachWithIndex { element, i ->
     boolean firstLineFlag = setEndFlag
-    setEndFlag = list[i].isBlank()
+    setEndFlag = element.isBlank()
 
     if(!setEndFlag) {
-        def chars = list[i].toCharArray()
+        def chars = element.toCharArray()
         if(firstLineFlag) set.addAll(chars)
         else set.retainAll(chars)
     }
