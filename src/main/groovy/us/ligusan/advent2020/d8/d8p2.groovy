@@ -1,8 +1,10 @@
 package us.ligusan.advent2020.d8;
 
-List<String> list = new File(getClass().getResource('input.txt').toURI()).collect {it}
+List<Tuple2> list = new File(getClass().getResource('input.txt').toURI()).collect {
+    matcher = it =~ /(nop|acc|jmp) ([+-]\d+)/
 
-HashMap<Integer, Tuple2> instructions = [:]
+    [matcher[0][1], Integer.valueOf(matcher[0][2])]
+}
 
 HashSet<Integer> executed
 int acc
@@ -15,16 +17,9 @@ outer: for(;;) {
     acc = 0
 
     for(int i = 0; !executed.contains(i);) {
-        Tuple2 instruction = instructions[i]
+        Tuple2 instruction = i == modified ? ['nop' == list[i][0] ? 'jmp' : 'nop', list[i][1]] : list[i]
 
-        if(instruction == null) {
-            matcher = list[i] =~ /(nop|acc|jmp) ([+-])(\d+)/
-
-            instructions[i] = (instruction = new Tuple2(matcher[0][1], Integer.valueOf(matcher[0][2] + matcher[0][3])))
-        }
-        if(i == modified) instruction = new Tuple2('nop' == instruction[0] ? 'jmp' : 'nop', instruction[1])
-
-//        println "${i} ${instruction}"
+        //        println "${i} ${instruction}"
 
         executed << i
 
@@ -46,9 +41,9 @@ outer: for(;;) {
     }
 
     if(modified < 0) toModify = executed as Queue
-    while(instructions[modified = toModify.poll()][0] == 'acc');
+    while(list[modified = toModify.poll()][0] == 'acc');
 
-    println "0: ${modified} ${instructions[modified]}"
+        println "0: ${modified} ${list[modified]}"
 }
 
 println acc

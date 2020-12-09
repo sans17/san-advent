@@ -11,14 +11,13 @@ for(int i = 0; !executed.contains(i);) {
 
     executed << i
 
-    matcher = list[i] =~ /(nop|acc|jmp) ([+-])(\d+)/
+    matcher = list[i] =~ /(nop|acc|jmp) ([+-]\d+)/
 
     int di = 1
     int da = 0
     
     if(!'nop'.equals(matcher[0][1])) {
-        int add = Integer.valueOf(matcher[0][3])
-        if('-'.equals(matcher[0][2])) add *= -1
+        int add = Integer.valueOf(matcher[0][2])
 
         if('acc'.equals(matcher[0][1])) da = add
         else di = add
