@@ -7,13 +7,7 @@ int yLimit = list[0].size()
 
 int multiple = 1;
 
-for(Tuple2 i in [
-    new Tuple2(1, 1),
-    new Tuple2(1, 3),
-    new Tuple2(1, 5),
-    new Tuple2(1, 7),
-    new Tuple2(2, 1)
-]) {
+for(Tuple2 i in [[1, 1], [1, 3], [1, 5], [1, 7], [2, 1]]) {
     int y = 0
     int treesNumber = 0
     for(int x = 0; x < xLimit; x += i[0]) {
