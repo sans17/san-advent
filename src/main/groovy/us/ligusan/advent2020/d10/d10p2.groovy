@@ -27,7 +27,7 @@ for(int i = 1; i<list.size(); i++)
             diff1++
             break
         case 2:
-            println "no!!!"
+            println 'no!!!'
             break
         case 3:
             if(diff1 > 1) ways *= fib3(diff1)
