@@ -26,7 +26,7 @@ for(int i = 1; i<list.size(); i++)
         case 1:
             diff1++
             break
-        case 1:
+        case 2:
             println "no!!!"
             break
         case 3:
