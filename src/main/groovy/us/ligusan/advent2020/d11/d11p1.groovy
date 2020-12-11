@@ -11,31 +11,23 @@ List<String> seats = []
 
 while(seats != seatsNext){
     seats = seatsNext
-
-    //    println "------------ ${steps}"
-    //    def a = seats.collect { (it.collect { it < 0 ? '.' : it == 0 ? 'L' : '#' }).join('') }
-    //    //println a
-    //    println a.join('\n')
-
     seatsNext = []
 
-    seats.eachWithIndex { row, index ->
+    seats.eachWithIndex { row, rowIndex ->
         String newRow = ''
-        row.eachWithIndex { seat, i ->
+        row.eachWithIndex { seat, seatIndex ->
             char newSeat = seat
             if(newSeat != '.') {
                 int occ = 0
-                for(int j in -1..1) for(int k in -1..1) if(j != 0 || k != 0)
+                for(int i in -1..1) for(int j in -1..1) if(i != 0 || j != 0)
                 {
-                    int x = i + k
-                    int y = index + j
+                    int x = seatIndex + j
+                    int y = rowIndex + i
                     if(x >= 0 && x < sizeX && y >= 0 && y < sizeY && seats[y][x] == '#') occ++
-
-                    //                println "${index} ${i} ${occ}"
                 }
 
-                if(row[i] == 'L' && occ == 0) newSeat = '#'
-                else if(row[i] == '#' && occ >= 5) newSeat = 'L'
+                if(row[seatIndex] == 'L' && occ == 0) newSeat = '#'
+                else if(row[seatIndex] == '#' && occ >= 5) newSeat = 'L'
             }
             newRow += newSeat
         }
@@ -44,5 +36,4 @@ while(seats != seatsNext){
     }
 }
 
-def sums = seats.collect { it.replaceAll('[^#]', '').size() }
-println sums.sum()
+println seats.sum { it.count('#') }
