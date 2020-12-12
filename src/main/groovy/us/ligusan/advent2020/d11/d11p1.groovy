@@ -13,8 +13,7 @@ for(def seats = []; seats != seatsNext;){
     seatsNext = seats.withIndex().collect { row, rowIndex ->
         //    println "${index} ${row}"
         row.withIndex().collect { seat, seatIndex ->
-            char newSeat = seat
-            if(newSeat != '.') {
+            if(seat != '.') {
                 int occ = 0
                 for(int i in -1..1) for(int j in -1..1) if(i != 0 || j != 0)
                 {
@@ -23,10 +22,10 @@ for(def seats = []; seats != seatsNext;){
                     if(x >= 0 && x < sizeX && y >= 0 && y < sizeY && seats[y][x] == '#') occ++
                 }
 
-                if(row[seatIndex] == 'L' && occ == 0) newSeat = '#'
-                else if(row[seatIndex] == '#' && occ >= 5) newSeat = 'L'
+                if(seat == 'L' && occ == 0) return '#'
+                if(seat == '#' && occ >= 4) return 'L'
             }
-            newSeat
+            seat
         }
     }
 }
