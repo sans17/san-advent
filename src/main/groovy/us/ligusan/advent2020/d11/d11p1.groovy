@@ -5,13 +5,13 @@ def seatsNext = new File(getClass().getResource('input.txt').toURI()).collect { 
 int sizeX = seatsNext[0].size()
 int sizeY = seatsNext.size
 
-//println seatsNext
-
 for(def seats = []; seats != seatsNext;){
     seats = seatsNext
 
+    //    println '-------'
+
     seatsNext = seats.withIndex().collect { row, rowIndex ->
-        //    println "${index} ${row}"
+        //        println "${row.join()}"
         row.withIndex().collect { seat, seatIndex ->
             if(seat != '.') {
                 int occ = 0
