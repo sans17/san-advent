@@ -1,21 +1,18 @@
 package us.ligusan.advent2020.d11;
 
-List<String> seatsNext = new File(getClass().getResource('input.txt').toURI()).collect { it }
+def seatsNext = new File(getClass().getResource('input.txt').toURI()).collect { Arrays.asList(it.toCharArray()) }
 
 int sizeX = seatsNext[0].size()
 int sizeY = seatsNext.size
 
 //println seatsNext
 
-List<String> seats = []
-
-while(seats != seatsNext){
+for(def seats = []; seats != seatsNext;){
     seats = seatsNext
-    seatsNext = []
 
-    seats.eachWithIndex { row, rowIndex ->
-        String newRow = ''
-        row.eachWithIndex { seat, seatIndex ->
+    seatsNext = seats.withIndex().collect { row, rowIndex ->
+        //    println "${index} ${row}"
+        row.withIndex().collect { seat, seatIndex ->
             char newSeat = seat
             if(newSeat != '.') {
                 int occ = 0
@@ -29,11 +26,9 @@ while(seats != seatsNext){
                 if(row[seatIndex] == 'L' && occ == 0) newSeat = '#'
                 else if(row[seatIndex] == '#' && occ >= 5) newSeat = 'L'
             }
-            newRow += newSeat
+            newSeat
         }
-
-        seatsNext << newRow
     }
 }
 
-println seats.sum { it.count('#') }
+println seatsNext.sum { it.count('#') }
