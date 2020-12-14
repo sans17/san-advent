@@ -7,18 +7,14 @@ matcher.find()
 
 HashMap<Integer, Integer> busMinuteMap = [:]
 matcher.eachWithIndex { match, index ->
-    if(match[1] != 'x') {
-        int bus = Integer.parseInt(match[1])
-        busMinuteMap[bus] = index
-    }
+    if(match[1] != 'x') busMinuteMap[Integer.parseInt(match[1])] = index
 }
 
 println busMinuteMap
-//def max=busMinuteMap.max { it.key }
 
 BigInteger base = 0
 BigInteger change = 1
-busMinuteMap.eachWithIndex {
+busMinuteMap.each {
     println " 0: ${it} ${base} ${change}"
 
     //    if(index > 3) return
