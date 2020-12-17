@@ -15,18 +15,15 @@ def nextActive = [] as Set
 
     def processed = [] as Set
     active.each { element ->
-        for(int i1 in -1..1) for(int j1 in -1..1) for(int k1 in -1..1) for(int l1 in -1..1) {
-            int x1 = element[0] + i1
-            int y1 = element[1] + j1
-            int z1 = element[2] + k1
-            int w1 = element[3] + l1
-            
-            def check = [x1, y1, z1, w1]
+        [-1..1, -1..1, -1..1, -1..1].combinations().each { i ->
+            def check = [element, i].transpose()*.sum()
             if(processed.add(check)) {
                 int nnum = 0
-                for(int i2 in -1..1) for(int j2 in -1..1) for(int k2 in -1..1) for(int l2 in -1..1) if((i2 != 0 || j2 != 0 || k2 != 0 || l2 != 0) && active.contains([x1 + i2, y1 + j2, z1 + k2, w1 + l2])) nnum++
+                [-1..1, -1..1, -1..1, -1..1].combinations().each { j ->
+                    if(!(j.every { it == 0 }) && active.contains([check, j].transpose()*.sum())) nnum++
+                }
 
-//                println "0: ${check} ${active.contains(check)} ${nnum}"
+                //                println "0: ${check} ${active.contains(check)} ${nnum}"
 
                 if(nnum == 3 || nnum == 2 && active.contains(check)) nextActive << check
             }
@@ -35,4 +32,3 @@ def nextActive = [] as Set
 
     println "${it} ${nextActive.size()}"
 }
-
