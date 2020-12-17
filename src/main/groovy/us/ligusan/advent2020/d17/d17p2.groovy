@@ -22,9 +22,7 @@ def nextActive = [] as Set
             int w1 = element[3] + l1
             
             def check = [x1, y1, z1, w1]
-            if(!processed.contains(check)) {
-                processed << check
-
+            if(processed.add(check)) {
                 int nnum = 0
                 for(int i2 in -1..1) for(int j2 in -1..1) for(int k2 in -1..1) for(int l2 in -1..1) if(!(i2 == 0 && j2 == 0 & k2 == 0 && l2 == 0) && active.contains([x1 + i2, y1 + j2, z1 + k2, w1 + l2])) nnum++
 
