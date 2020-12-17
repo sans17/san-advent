@@ -25,7 +25,8 @@ def ball = [-1..1, -1..1, -1..1].combinations()
                 println "0: ${check} ${active.contains(check)} ${nnum}"
 
                 if(nnum == 3 || nnum == 2 && active.contains(check)) return check
-            } else return null
+            }
+            return null
         }
     }) as Set
 
