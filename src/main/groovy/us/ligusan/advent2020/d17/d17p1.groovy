@@ -6,7 +6,7 @@ def nextActive = ((new File(getClass().getResource('input.txt').toURI()).collect
     }
 }) as Set
 
-def ball = [-1..1, -1..1, -1..1].combinations()
+def ball = ((1..3).collect { -1..1 }).combinations()
 
 (1..6).each {
     println "${nextActive.size()} ${nextActive}"
