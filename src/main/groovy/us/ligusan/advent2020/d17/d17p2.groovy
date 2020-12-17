@@ -7,6 +7,8 @@ def nextActive = [] as Set
     }
 }
 
+def ball = [-1..1, -1..1, -1..1, -1..1].combinations()
+
 (1..6).each {
     println "${nextActive.size()} ${nextActive}"
 
@@ -15,11 +17,11 @@ def nextActive = [] as Set
 
     def processed = [] as Set
     active.each { element ->
-        [-1..1, -1..1, -1..1, -1..1].combinations().each { i ->
+        ball.each { i ->
             def check = [element, i].transpose()*.sum()
             if(processed.add(check)) {
                 int nnum = 0
-                [-1..1, -1..1, -1..1, -1..1].combinations().each { j ->
+                ball.combinations().each { j ->
                     if(!(j.every { it == 0 }) && active.contains([check, j].transpose()*.sum())) nnum++
                 }
 
