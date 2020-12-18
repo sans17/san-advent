@@ -6,7 +6,7 @@ def nextActive = ((new File(getClass().getResource('input.txt').toURI()).collect
     }
 }) as Set
 
-def ball = ((1..4).collect { -1..1 }).combinations()
+def cube = ((1..4).collect { -1..1 }).combinations()
 
 (1..6).each {
     println "${nextActive.size()} ${nextActive}"
@@ -15,10 +15,10 @@ def ball = ((1..4).collect { -1..1 }).combinations()
 
     def processed = [] as Set
     nextActive = (active.collectMany { element ->
-        ball.findResults { i ->
+        cube.findResults { i ->
             def check = [element, i].transpose()*.sum()
             if(processed.add(check)) {
-                int nnum = ball.sum { j ->
+                int nnum = cube.sum { j ->
                     !(j.every { it == 0 }) && active.contains([check, j].transpose()*.sum()) ? 1 : 0
                 }
 
