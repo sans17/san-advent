@@ -1,16 +1,5 @@
 package us.ligusan.advent2020.d21;
 
-//def pairs = [
-//    [['mxmxvkd', 'kfcds', 'sqjhc', 'nhms'] as Set, ['dairy', 'fish'] as Set],
-//    [['trh', 'fvjkl', 'sbzzf', 'mxmxvkd'] as Set, ['dairy'] as Set],
-//    [['sqjhc', 'fvjkl'] as Set, ['soy'] as Set],
-//    [['sqjhc', 'mxmxvkd', 'sbzzf'] as Set, ['fish'] as Set]] as Queue
-//def ingrs = pairs.collectMany {
-//    it[0]
-//}
-//println "-30 -> ${ingrs}"
-
-
 List<String> list = new File(getClass().getResource('input.txt').toURI()).collect {it}
 
 def pairs = []
@@ -29,17 +18,12 @@ list.each { line ->
     ]
 }
 
-//println "-20 -> ${ingrs.size()} ${pairs.size()}"
-//println "-19 -> ${ingrs} ${pairs}"
 
 pairs = pairs.sort { it[0].size() + it[1].size() }
 
-def foundA = [] as Set
+TreeMap<String, String> foundA = [:]
 def foundI = [] as Set
 
-//int stop = 10
-//for(int i = 0 ; i < stop ; i++) {
-//    println "------  ${i} ${pairs.size()}"
 pairs.each { println it }
 
 pairs.each { a ->
@@ -53,10 +37,10 @@ pairs = pairs.toSet().toList().sort { it[0].size() + it[1].size() }
 println "------ ${pairs.size()}"
 pairs.each { println it }
 
-for(def same ; (same = pairs.find { it[0].size() == it[1].size() }) != null ; ) {
+for(def same ; (same = pairs.find { it[0].size() == 1 && it[1].size() == 1 }) != null ; ) {
     println "-10 -> ${same}"
 
-    foundA += same[0]
+    foundA[(same[1].toList())[0]] = (same[0]).toList()[0]
 
     pairs.remove(same)
 
@@ -73,7 +57,7 @@ pairs.each {
     foundI += it[0]
 }
 
+
 println "30 -> ${ingrs.toSet().size()} ${foundA.size()} ${foundI.size()}"
 
-def diff = ingrs - foundA
-println diff.size()
+println foundA.values().join(',')
