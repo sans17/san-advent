@@ -12,7 +12,7 @@ list.each { line ->
     else if("" == line) {
         if(nextCard != null) {
             cards << nextCard
-            input << (1..5).collect { (1..5).collect {0} }
+            input << (1..5).collect { (1..5).collect { 1 } }
         }
         nextCard = []
     } else nextCard << line.split()
@@ -22,30 +22,34 @@ println nums
 println cards
 //println input
 
-int ret
-int counter = 0
-for(String num : nums) {
+int winIndex
+String winNum
+for(String num in nums) {
+    winNum = num
+    
     cards.eachWithIndex { card, i ->
         (0..4).each { x->
             (0..4).each { y ->
-                if(card[x][y] == num) input[i][x][y] = Integer.valueOf(num)
+                if(card[x][y] == num) input[i][x][y] = 0
             }
         }
     }
 
-//    println "counter=${counter}"
+//    println "counter=${counter++}, num=${num}"
 //    println input
     
-    ret = (input.collect { card ->
-        def multi = card.collect { h -> h.inject(1) { m, it -> m*it } }
-        multi += card.transpose().collect { v -> v.inject(1) { m, it -> m*it } }
+    winIndex = input.findIndexOf { flag -> 
+        def sums = flag.collect { it.sum() }
+        sums += flag.transpose().collect { it.sum() }
         
-        multi.sum()
-    }).sum()
+//        println "sums=${sums}"
+        
+        sums.contains(0)
+    }
 
-//    println ret
-        
-    if(ret > 0) break
+    if(winIndex >= 0) break
 }
 
-println ret
+int sum = ([cards[winIndex].flatten().collect { Integer.valueOf(it) }, input[winIndex].flatten()].transpose()*.inject(1) { m, it -> m*it }).sum() 
+
+println Integer.valueOf(winNum) * sum
