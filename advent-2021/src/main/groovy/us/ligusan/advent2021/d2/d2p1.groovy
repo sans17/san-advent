@@ -1,4 +1,4 @@
-package us.ligusan.advent2021.d2;
+package us.ligusan.advent2021.d2
 
 List<String> list = new File(getClass().getResource('input.txt').toURI()).collect {it}
 
