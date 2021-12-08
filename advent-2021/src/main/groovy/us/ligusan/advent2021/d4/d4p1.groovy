@@ -1,6 +1,6 @@
 package us.ligusan.advent2021.d4
 
-List<String> list = new File(getClass().getResource('input.txt').toURI()).collect {it}
+List<String> list = new File(getClass().getResource('example.txt').toURI()).collect {it}
 
 def nums
 def cards = []
@@ -12,7 +12,7 @@ list.each { line ->
     else if("" == line) {
         if(nextCard != null) {
             cards << nextCard
-            input << (1..5).collect { (1..5).collect { 1 } }
+            input << (1..5).collect { (1..5).collect {0} }
         }
         nextCard = []
     } else nextCard << line.split()
@@ -22,34 +22,29 @@ println nums
 println cards
 //println input
 
-int winIndex
-String winNum
-for(String num in nums) {
-    winNum = num
-    
+int counter = 0
+for(String num : nums) {
     cards.eachWithIndex { card, i ->
         (0..4).each { x->
             (0..4).each { y ->
-                if(card[x][y] == num) input[i][x][y] = 0
+                if(card[x][y] == num) input[i][x][y] = Integer.valueOf(num)
             }
         }
     }
 
-//    println "counter=${counter++}, num=${num}"
+//    println "counter=${counter}"
 //    println input
     
-    winIndex = input.findIndexOf { flag -> 
-        def sums = flag.collect { it.sum() }
-        sums += flag.transpose().collect { it.sum() }
+    input.collect { card ->
+        def win = card.collect { h -> h.inject(1) { m, it -> m*Math.signum(it) } }
+        win += card.transpose().collect { v -> v.inject(1) { m, it -> m*it } }
         
-//        println "sums=${sums}"
-        
-        sums.contains(0)
+        win.sum()
     }
 
-    if(winIndex >= 0) break
+//    println ret
+        
+    if(ret > 0) break
 }
 
-int sum = ([cards[winIndex].flatten().collect { Integer.valueOf(it) }, input[winIndex].flatten()].transpose()*.inject(1) { m, it -> m*it }).sum() 
-
-println Integer.valueOf(winNum) * sum
+println ret

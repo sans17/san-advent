@@ -2,8 +2,6 @@ package us.ligusan.advent2021.d3
 
 List<String> list = new File(getClass().getResource('input.txt').toURI()).collect {it}
 
-int size = list.size()
-
 def og = list
 def co = list
 for(int i = 0; og.size() > 1; i++) {
