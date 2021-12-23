@@ -85,6 +85,8 @@ def tMap = sMap.collect { getTs(it) }
 
 def transMap = [:]
 
+// execute for all pairs to find connectivity graph
+//def links = (((1..2).collect { 0..(tMap.size()-1) }).combinations().findAll { it[0] < it[1] })
 def links = [[25, 12], [12, 20], [16, 1], [10, 7], [21, 24], [24, 7], [7, 6], [13, 18], [18, 14], [15, 19], [19, 23], [23, 14], [14, 5], [0, 6], [6, 11], [1, 17], [17, 3], [2, 9], [9, 11], [3, 4], [4, 11], [5, 8], [8, 22], [22, 11], [20, 11]]
 println links
 
