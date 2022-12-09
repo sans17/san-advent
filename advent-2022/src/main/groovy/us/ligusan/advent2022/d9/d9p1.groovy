@@ -31,7 +31,7 @@ list.each { line ->
     }
     println "hd=$hd"
     
-    for(int i = 1; i <= Integer.valueOf(split[2]); i++) {
+    (1..Integer.valueOf(split[2])).each {
         h = [h, hd].transpose()*.sum()
         htt=[h, t].transpose().collect { it[0] - it[1] };
         println "htt=$htt"
