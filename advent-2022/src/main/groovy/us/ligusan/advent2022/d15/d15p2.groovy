@@ -36,8 +36,6 @@ outer: for(j=0; j<ss.size(); j++) {
 	s=ss[j]
 	println "j=$j, s=$s, mds[$j]=${mds[j]}"
 	for(d=0; d<=mds[j]+1; d++) {
-		[]
-		
 		ps = cube.collect { [it, [d, (mds[j]+1)-d]].transpose().collect { it[0] * it[1] } }.collect { [s, it].transpose()*.sum() }.findAll { it.find { it < 0 || it > max } == null } as Set
 //		println "ps=$ps"
 		for(p in ps) {
@@ -52,7 +50,7 @@ outer: for(j=0; j<ss.size(); j++) {
 			if(ind < 0) {
 				println '-----'
 				println p
-				println new BigInteger(p[0])*4_000_000+p[1]
+				println new BigInteger(p[0].toString())*4_000_000+p[1]
 				break outer
 			}
 		}
