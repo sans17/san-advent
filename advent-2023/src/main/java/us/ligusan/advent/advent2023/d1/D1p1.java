@@ -1,4 +1,4 @@
-package us.ligusan.advent2023.d1;
+package us.ligusan.advent.advent2023.d1;
 
 import java.util.Scanner;
 

@@ -1,4 +1,4 @@
-package us.ligusan.advent2023.d1;
+package us.ligusan.advent.advent2023.d1;
 
 import java.util.Map;
 import java.util.Scanner;
@@ -37,12 +37,12 @@ public class D1p2 {
 
                 numbers.entrySet().stream().map(e -> Map.entry(e.getKey(), s.indexOf(e.getKey()))).filter(e -> e.getValue() >= 0).min(Map.Entry.comparingByValue()).ifPresentOrElse(
                         e -> retReference.set(10 * numbers.get(e.getKey())),
-                        () -> System.out.format("No number found in %s\n", s)
+                        () -> System.out.format("Error!!! Left number not found! %s\n", s)
                 );
                 System.out.format("ret=%d ", retReference.get());
                 numbers.entrySet().stream().map(e -> Map.entry(e.getKey(), new StringBuilder(s).reverse().indexOf(new StringBuilder(e.getKey()).reverse().toString()))).filter(e -> e.getValue() >= 0).min(Map.Entry.comparingByValue()).ifPresentOrElse(
                         e -> retReference.set(retReference.get() + numbers.get(e.getKey())),
-                        () -> System.out.format("No number found in %s\n", s)
+                        () -> System.out.format("Error!!! Right number not found!  %s\n", s)
                 );
                 System.out.format("ret=%d ", retReference.get());
                 System.out.println();
