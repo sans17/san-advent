@@ -1,55 +1,37 @@
 package us.ligusan.advent.advent2023.d1;
 
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Scanner;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class D1p2 {
     public static void main(final String[] args) {
-        final var numbers = Map.ofEntries(
-                Map.entry("zero", 0),
-                Map.entry("one", 1),
-                Map.entry("two", 2),
-                Map.entry("three", 3),
-                Map.entry("four", 4),
-                Map.entry("five", 5),
-                Map.entry("six", 6),
-                Map.entry("seven", 7),
-                Map.entry("eight", 8),
-                Map.entry("nine", 9),
-                Map.entry("0", 0),
-                Map.entry("1", 1),
-                Map.entry("2", 2),
-                Map.entry("3", 3),
-                Map.entry("4", 4),
-                Map.entry("5", 5),
-                Map.entry("6", 6),
-                Map.entry("7", 7),
-                Map.entry("8", 8),
-                Map.entry("9", 9)
-        );
+        final var numbers = Arrays.asList("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine");
 
         try (var scanner = new Scanner(D1p2.class.getResourceAsStream("input.txt"))) {
             scanner.useDelimiter("\r?\n").tokens().mapToInt(s -> {
-                final var retReference = new AtomicReference<Integer>();
+                final var retRef = new AtomicInteger();
 
                 System.out.format("s=%s ", s);
 
-                numbers.entrySet().stream().map(e -> Map.entry(e.getKey(), s.indexOf(e.getKey()))).filter(e -> e.getValue() >= 0).min(Map.Entry.comparingByValue()).ifPresentOrElse(
-                        e -> retReference.set(10 * numbers.get(e.getKey())),
+                final var index = new AtomicInteger();
+                numbers.stream().map(n -> Map.entry(index.getAndIncrement(), s.indexOf(n))).filter(e -> e.getValue() >= 0).min(Map.Entry.comparingByValue()).ifPresentOrElse(
+                        e -> retRef.set(10 * (e.getKey() % 10)),
                         () -> System.out.format("Error!!! Left number not found! %s\n", s)
                 );
-                System.out.format("ret=%d ", retReference.get());
-                numbers.entrySet().stream().map(e -> Map.entry(e.getKey(), new StringBuilder(s).reverse().indexOf(new StringBuilder(e.getKey()).reverse().toString()))).filter(e -> e.getValue() >= 0).min(Map.Entry.comparingByValue()).ifPresentOrElse(
-                        e -> retReference.set(retReference.get() + numbers.get(e.getKey())),
+                System.out.format("ret=%d ", retRef.get());
+
+                index.set(0);
+                numbers.stream().map(n -> Map.entry(index.getAndIncrement(), new StringBuilder(s).reverse().indexOf(new StringBuilder(n).reverse().toString()))).filter(e -> e.getValue() >= 0).min(Map.Entry.comparingByValue()).ifPresentOrElse(
+                        e -> retRef.addAndGet(e.getKey() % 10),
                         () -> System.out.format("Error!!! Right number not found!  %s\n", s)
                 );
-                System.out.format("ret=%d ", retReference.get());
-                System.out.println();
+                System.out.format("ret=%d\n", retRef.get());
 
 //                System.out.format("s=%s, ret=%d\n", s, ret, chars[i], chars[j]);
 
-                return retReference.get();
+                return retRef.get();
             }).reduce(Integer::sum).ifPresent(System.out::println);
         }
     }
