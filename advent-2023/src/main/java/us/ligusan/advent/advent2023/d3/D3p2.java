@@ -23,14 +23,16 @@ public class D3p2 {
             System.out.format("numbers=%s\nstars=%s\n", numbers, stars);
         }
 
-        stars.stream().map(star -> numbers.stream().filter(number -> {
-            final int starX = star.getKey();
-            final int starY = star.getValue();
+        stars.stream().map(star -> {
+            final var starX = star.getKey();
+            final var starY = star.getValue();
 
-            final var numberXY = number.getValue();
-            final var numberX = numberXY.getKey();
-            final int numberY = numberXY.getValue();
-            return starX >= numberX - 1 && starX <= numberX + number.getKey().length() && starY >= numberY - 1 && starY <= numberY + 1;
-        }).map(number -> Integer.parseInt(number.getKey())).collect(Collectors.toList())).filter(adjustedNumbers -> adjustedNumbers.size() == 2).map(adjustedNumbers -> adjustedNumbers.get(0) * adjustedNumbers.get(1)).reduce(Integer::sum).ifPresent(System.out::println);
+            return numbers.stream().filter(number -> {
+                final var numberXY = number.getValue();
+                final var numberX = numberXY.getKey();
+                final var numberY = numberXY.getValue();
+                return starX >= numberX - 1 && starX <= numberX + number.getKey().length() && starY >= numberY - 1 && starY <= numberY + 1;
+            }).map(number -> Integer.parseInt(number.getKey())).collect(Collectors.toList());
+        }).filter(adjustedNumbers -> adjustedNumbers.size() == 2).map(gearNumbers -> gearNumbers.get(0) * gearNumbers.get(1)).reduce(Integer::sum).ifPresent(System.out::println);
     }
 }
