@@ -19,9 +19,10 @@ public class D3p2 {
                 Pattern.compile("\\d+").matcher(s).results().forEach(m -> numbers.add(Map.entry(m.group(), Map.entry(m.start(), y))));
                 Pattern.compile("\\*").matcher(s).results().forEach(m -> stars.add(Map.entry(m.start(), y)));
             });
-
-            System.out.format("numbers=%s\nstars=%s\n", numbers, stars);
         }
+
+        System.out.format("numbers=%s\n", numbers);
+        System.out.format("stars=%s\n", stars);
 
         stars.stream().map(star -> {
             final var starX = star.getKey();
@@ -33,6 +34,6 @@ public class D3p2 {
                 final var numberY = numberXY.getValue();
                 return starX >= numberX - 1 && starX <= numberX + number.getKey().length() && starY >= numberY - 1 && starY <= numberY + 1;
             }).map(number -> Integer.parseInt(number.getKey())).collect(Collectors.toList());
-        }).filter(adjustedNumbers -> adjustedNumbers.size() == 2).map(gearNumbers -> gearNumbers.get(0) * gearNumbers.get(1)).reduce(Integer::sum).ifPresent(System.out::println);
+        }).filter(gearNumbers -> gearNumbers.size() == 2).map(gearNumbers -> gearNumbers.get(0) * gearNumbers.get(1)).reduce(Integer::sum).ifPresent(System.out::println);
     }
 }
