@@ -9,88 +9,123 @@ import java.util.stream.Collectors;
 
 public class D5p2 {
     public static void main(final String[] args) {
-        final var initialSeeds = new ArrayList<Map.Entry<BigInteger, BigInteger>>();
+        final var initialSeeds = new ArrayList<Range>();
 
-        final var rulesList = new ArrayList<Map<Map.Entry<BigInteger, BigInteger>, BigInteger>>();
+        final var rulesList = new ArrayList<Map<Range, BigInteger>>();
 
         final var rulesFlagRef = new AtomicBoolean();
-        final var ruleMapRef = new AtomicReference<Map<Map.Entry<BigInteger, BigInteger>, BigInteger>>();
+        final var ruleMapRef = new AtomicReference<Map<Range, BigInteger>>();
         try (var scanner = new Scanner(D5p2.class.getResourceAsStream("input.txt"))) {
             scanner.useDelimiter("\r?\n").tokens().forEach(s -> {
                 if (rulesFlagRef.get()) {
                     if (s.isBlank()) {
                         final var ruleMap = ruleMapRef.get();
-                        if (ruleMap != null) rulesList.add(ruleMapRef.get());
+                        if (ruleMap != null) rulesList.add(ruleMap);
+                        ruleMapRef.set(null);
                     } else if (s.endsWith(":")) {
                         ruleMapRef.set(new HashMap<>());
                     } else {
-                        final var ruleList = Pattern.compile("\\d+").matcher(s).results().map(matchResult -> new BigInteger(matchResult.group())).collect(Collectors.toList());
-                        ruleMapRef.get().put(Map.entry(ruleList.get(1), ruleList.get(2)), ruleList.get(0));
+                        final var ruleList = Pattern.compile("\\d+").matcher(s).results().map(matchResult -> matchResult.group()).collect(Collectors.toList());
+                        ruleMapRef.get().put(new Range(ruleList.get(1), ruleList.get(2)), new BigInteger(ruleList.get(0)));
                     }
                 } else {
-                    Pattern.compile("(\\d+) (\\d+)").matcher(s.split(":")[1]).results().forEach(m -> initialSeeds.add(Map.entry(new BigInteger(m.group(1)), new BigInteger(m.group(2)))));
+                    Pattern.compile("(\\d+) (\\d+)").matcher(s.split(":")[1]).results().forEach(m -> initialSeeds.add(new Range(m.group(1), m.group(2))));
                     rulesFlagRef.set(true);
                 }
             });
         }
-        rulesList.add(ruleMapRef.get());
+        final var ruleMap = ruleMapRef.get();
+        if (ruleMap != null) rulesList.add(ruleMap);
 
         System.out.format("initialSeeds=%s\n", initialSeeds);
         System.out.format("rulesList=%s\n", rulesList);
 
-        List<Map.Entry<BigInteger, BigInteger>> result = initialSeeds.stream().map(seed -> {
-            final var seedStart = seed.getKey();
-            return Map.entry(seedStart, seedStart.add(seed.getValue()).subtract(BigInteger.ONE));
-        }).collect(Collectors.toList());
-
-        for (Map<Map.Entry<BigInteger, BigInteger>, BigInteger> rules : rulesList) {
+        Map<Range, Optional<Map.Entry<Range, BigInteger>>> result = initialSeeds.stream().collect(Collectors.toMap(seed -> seed, seed -> Optional.empty()));
+        for (Map<Range, BigInteger> rules : rulesList) {
             System.out.format("rules=%s\n", rules);
-            final var newResult = new ArrayList<Map.Entry<BigInteger, BigInteger>>();
 
-            final var intermidiaryResult = new ArrayDeque<Map.Entry<BigInteger, BigInteger>>(result);
+            for (Map.Entry<Range, BigInteger> rule : rules.entrySet()) {
+                System.out.format("\trule=%s\n", rule);
 
-            while (intermidiaryResult.size() > 0) {
-                final var seed = intermidiaryResult.removeFirst();
-
-                final var seedStart = seed.getKey();
-                final var seedEnd = seed.getValue();
-                System.out.format("\tseed=%s\n", seed);
-
-                boolean found = false;
-                for (Map.Entry<Map.Entry<BigInteger, BigInteger>, BigInteger> rule : rules.entrySet()) {
-                    System.out.format("\t\trule=%s\n", rule);
-
-                    final var ruleKey = rule.getKey();
-                    final var ruleStart = ruleKey.getKey();
-                    final var ruleLength = ruleKey.getValue().subtract(BigInteger.ONE);
-                    final var ruleEnd = ruleStart.add(ruleLength);
-                    final var ruleValue = rule.getValue();
-                    System.out.format("\t\t%s -> %s ... %s -> %s\n", ruleStart, ruleValue, ruleEnd, ruleValue.add(ruleLength));
-
-                    final var maxStart = seedStart.max(ruleStart);
-                    final var minEnd = seedEnd.min(ruleEnd);
-
-                    found = minEnd.compareTo(maxStart) >= 0;
-                    if (found) {
-                        if (seedStart.compareTo(ruleStart) < 0)
-                            intermidiaryResult.add(Map.entry(seedStart, ruleStart.subtract(BigInteger.ONE)));
-
-                        final var middle = Arrays.asList(maxStart, minEnd).stream().map(i -> ruleValue.add(i.subtract(ruleStart))).collect(Collectors.toList());
-                        newResult.add(Map.entry(middle.get(0), middle.get(1)));
-
-                        if (seedEnd.compareTo(ruleEnd) > 0)
-                            intermidiaryResult.add(Map.entry(ruleEnd.add(BigInteger.ONE), seedEnd));
-
-                        break;
-                    }
+                final var newResult = new HashMap<Range, Optional<Map.Entry<Range, BigInteger>>>();
+                for (Map.Entry<Range, Optional<Map.Entry<Range, BigInteger>>> transformation : result.entrySet()) {
+                    final var transformationKey = transformation.getKey();
+                    final var transformationValue = transformation.getValue();
+                    if (transformationValue.isEmpty()) {
+                        transformationKey.intersect(rule.getKey()).forEach((key, value) -> newResult.put(key, value ? Optional.of(rule) : Optional.empty()));
+                    } else newResult.put(transformation.getKey(), transformationValue);
                 }
-                if (!found) newResult.add(seed);
+                result = newResult;
+                System.out.format("\tresult=%s\n", result);
+
+                if (result.values().stream().allMatch(value -> value.isPresent())) break;
             }
 
-            System.out.format("newResult=%s\n", newResult);
-            result = newResult;
+            result = result.entrySet().stream().collect(Collectors.toMap(transformation -> {
+                final var transformationKey = transformation.getKey();
+                final var transformationValue = transformation.getValue();
+                if (transformationValue.isEmpty()) return transformationKey;
+
+                final var rule = transformationValue.get();
+                return transformationKey.transform(rule.getKey().getStart(), rule.getValue());
+            }, transformation -> Optional.empty()));
+            System.out.format("result=%s\n", result);
         }
 
-        result.stream().map(seed -> seed.getKey()).reduce(BigInteger::min).ifPresent(System.out::println);
+        result.entrySet().stream().map(transformation -> transformation.getKey().getStart()).reduce(BigInteger::min).ifPresent(System.out::println);
+    }
+}
+
+class Range {
+    private final BigInteger start;
+    private final BigInteger length;
+
+    protected Range(final BigInteger newStart, final BigInteger newLength) {
+        start = newStart;
+        length = newLength;
+    }
+    protected Range(final String newStart, final String newLength) {
+        start = new BigInteger(newStart);
+        length = new BigInteger(newLength);
+    }
+
+    protected BigInteger getStart() {
+        return start;
+    }
+    protected BigInteger getLength() {
+        return length;
+    }
+    protected BigInteger getEnd() {
+        return start.add(length).subtract(BigInteger.ONE);
+    }
+
+    public String toString() {
+        return String.format("%s..%s", start, getEnd());
+    }
+
+    protected Map<Range, Boolean> intersect(final Range rule) {
+        final var end = getEnd();
+        final var ruleStart = rule.getStart();
+        final var ruleEnd = rule.getEnd();
+
+        final var maxStart = start.max(ruleStart);
+        final var minEnd = end.min(ruleEnd);
+
+        if (maxStart.compareTo(minEnd) > 0) return Collections.singletonMap(this, false);
+
+        final var ret = new HashMap<Range, Boolean>();
+
+        if (start.compareTo(ruleStart) < 0) ret.put(new Range(start, ruleStart.subtract(start)), false);
+
+        ret.put(new Range(maxStart, minEnd.subtract(maxStart).add(BigInteger.ONE)), true);
+
+        if (end.compareTo(ruleEnd) > 0) ret.put(new Range(ruleEnd.add(BigInteger.ONE), end.subtract(ruleEnd)), false);
+
+        System.out.format("intersect(%s) -> %s\n", rule, ret);
+        return ret;
+    }
+
+    protected Range transform(final BigInteger ruleStart, final BigInteger ruleDestination) {
+        return new Range(start.add(ruleDestination.subtract(ruleStart)), length);
     }
 }

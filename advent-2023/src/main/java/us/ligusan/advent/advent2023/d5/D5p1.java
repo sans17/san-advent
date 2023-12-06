@@ -16,7 +16,7 @@ public class D5p1 {
 
         final var rulesList = new ArrayList<Map<Map.Entry<BigInteger, BigInteger>, BigInteger>>();
 
-        final var numberPattern = Pattern.compile("(\\d+)");
+        final var numberPattern = Pattern.compile("\\d+");
 
         final var rulesFlagRef = new AtomicBoolean();
         final var ruleMapRef = new AtomicReference<Map<Map.Entry<BigInteger, BigInteger>, BigInteger>>();

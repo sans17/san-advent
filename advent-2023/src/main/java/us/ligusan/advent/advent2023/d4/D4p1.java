@@ -10,7 +10,7 @@ public class D4p1 {
     public static void main(final String[] args) {
         try (var scanner = new Scanner(D4p1.class.getResourceAsStream("input.txt"))) {
             scanner.useDelimiter("\r?\n").tokens().mapToInt(s -> {
-                final var card = Arrays.stream(s.split(":")[1].split("\\|")).map(cardSide -> Pattern.compile("(\\d+)").matcher(cardSide).results().map(matchResult -> matchResult.group()).collect(Collectors.toList())).collect(Collectors.toList());
+                final var card = Arrays.stream(s.split(":")[1].split("\\|")).map(cardSide -> Pattern.compile("\\d+").matcher(cardSide).results().map(matchResult -> matchResult.group()).collect(Collectors.toList())).collect(Collectors.toList());
                 System.out.format("card=%s\n", card);
                 final var winningNumbers = card.get(0);
                 System.out.format("winningNumbers=%s\n", winningNumbers);

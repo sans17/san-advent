@@ -14,7 +14,7 @@ public class D4p2 {
                 final var numberOfCards = (forwardCards.isEmpty() ? 0 : forwardCards.remove(0)) + 1;
                 System.out.format("numberOfCards=%s\n", numberOfCards);
 
-                final var card = Arrays.stream(s.split(":")[1].split("\\|")).map(cardSide -> Pattern.compile("(\\d+)").matcher(cardSide).results().map(matchResult -> matchResult.group()).collect(Collectors.toList())).collect(Collectors.toList());
+                final var card = Arrays.stream(s.split(":")[1].split("\\|")).map(cardSide -> Pattern.compile("\\d+").matcher(cardSide).results().map(matchResult -> matchResult.group()).collect(Collectors.toList())).collect(Collectors.toList());
                 System.out.format("card=%s\n", card);
                 final var winningNumbers = card.get(0);
                 winningNumbers.retainAll(card.get(1));
