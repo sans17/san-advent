@@ -1,26 +1,23 @@
 package us.ligusan.advent.advent2023.d7;
 
-import java.util.Arrays;
-import java.util.HashMap;
+import java.util.Comparator;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class D7p2 {
     public static void main(final String[] args) {
         final var data = new TreeMap<String, Integer>((leftHand, rightHand) -> {
             System.out.format(": leftHand=%s, rightHand=%s\n", leftHand, rightHand);
 
-            final var handMaps = Arrays.asList(leftHand, rightHand).stream().map(hand -> Pattern.compile(".").matcher(hand).results().map(matchResult -> matchResult.group()).collect(Collectors.groupingBy(k -> k, Collectors.counting()))).map(handMap -> {
+            final var handMaps = Stream.of(leftHand, rightHand).map(hand -> Pattern.compile(".").matcher(hand).results().map(matchResult -> matchResult.group()).collect(Collectors.groupingBy(k -> k, Collectors.counting()))).map(handMap -> {
                 Long jokers = handMap.remove("J");
                 if (jokers != null)
-                    handMap.entrySet().stream().max((a, b) -> Long.compare(a.getValue(), b.getValue())).ifPresentOrElse(entry -> {
-                        handMap.put(entry.getKey(), entry.getValue() + jokers);
-                    }, () -> {
-                        handMap.put("J", jokers);
-                    });
+                    handMap.entrySet().stream().max(Comparator.comparingLong(Map.Entry::getValue)).ifPresentOrElse(entry -> handMap.put(entry.getKey(), entry.getValue() + jokers), () -> handMap.put("J", jokers));
                 return handMap;
             }).collect(Collectors.toList());
 
@@ -32,7 +29,7 @@ public class D7p2 {
             var ret = rightMap.size() - leftMap.size();
             if (ret != 0) return ret;
 
-            final var handCounts = Arrays.asList(leftMap, rightMap).stream().map(map -> map.values().stream().max(Long::compareTo).get()).collect(Collectors.toList());
+            final var handCounts = Stream.of(leftMap, rightMap).map(map -> map.values().stream().max(Long::compareTo).get()).collect(Collectors.toList());
             ret = Long.compare(handCounts.get(0), handCounts.get(1));
             if (ret != 0) return ret;
 
@@ -40,7 +37,7 @@ public class D7p2 {
                 final var leftChar = leftHand.charAt(i);
                 final var rightChar = rightHand.charAt(i);
 
-                if (leftChar != rightChar) return Arrays.asList(leftChar, rightChar).stream().map(c -> switch (c) {
+                if (leftChar != rightChar) return Stream.of(leftChar, rightChar).map(c -> switch (c) {
                     case 'A' -> 14;
                     case 'K' -> 13;
                     case 'Q' -> 12;
