@@ -13,16 +13,10 @@ public class D7p2 {
         final var data = new TreeMap<String, Integer>((leftHand, rightHand) -> {
             System.out.format(": leftHand=%s, rightHand=%s\n", leftHand, rightHand);
 
-            final var handMaps = Arrays.asList(leftHand, rightHand).stream().map(hand -> Pattern.compile(".").matcher(hand).results().map(matchResult -> matchResult.group()).reduce(new HashMap<String, Integer>(), (stringIntegerMap, s) -> {
-                stringIntegerMap.compute(s, (k, v) -> v == null ? 1 : v + 1);
-                return stringIntegerMap;
-            }, (map1, map2) -> {
-                map2.forEach((k, v) -> map1.compute(k, (k1, v1) -> v1 == null ? v : v + v1));
-                return map1;
-            })).map(handMap -> {
-                Integer jokers = handMap.remove("J");
+            final var handMaps = Arrays.asList(leftHand, rightHand).stream().map(hand -> Pattern.compile(".").matcher(hand).results().map(matchResult -> matchResult.group()).collect(Collectors.groupingBy(k -> k, Collectors.counting()))).map(handMap -> {
+                Long jokers = handMap.remove("J");
                 if (jokers != null)
-                    handMap.entrySet().stream().max((a, b) -> a.getValue() - b.getValue()).ifPresentOrElse(entry -> {
+                    handMap.entrySet().stream().max((a, b) -> Long.compare(a.getValue(), b.getValue())).ifPresentOrElse(entry -> {
                         handMap.put(entry.getKey(), entry.getValue() + jokers);
                     }, () -> {
                         handMap.put("J", jokers);
@@ -38,7 +32,8 @@ public class D7p2 {
             var ret = rightMap.size() - leftMap.size();
             if (ret != 0) return ret;
 
-            ret = Arrays.asList(leftMap, rightMap).stream().mapToInt(map -> map.values().stream().max(Integer::compareTo).get()).reduce((a, b) -> a - b).getAsInt();
+            final var handCounts = Arrays.asList(leftMap, rightMap).stream().map(map -> map.values().stream().max(Long::compareTo).get()).collect(Collectors.toList());
+            ret = Long.compare(handCounts.get(0), handCounts.get(1));
             if (ret != 0) return ret;
 
             for (int i = 0; i < leftHand.length(); i++) {
