@@ -36,7 +36,6 @@ public class D9p2 {
                     return newList;
                 }).takeWhile(newList -> newList.stream().anyMatch(i -> i != 0)).map(newList -> newList.get(0)).collect(Collectors.toList());
 
-
                 for (var i = runningList.size() - 1; i >= 1; i--)
                     runningList.set(i - 1, runningList.get(i - 1) - runningList.get(i));
                 System.out.format("runningList=%s\n", runningList);
