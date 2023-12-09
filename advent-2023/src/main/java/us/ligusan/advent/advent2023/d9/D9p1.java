@@ -15,26 +15,12 @@ public class D9p1 {
             System.out.println(scanner.useDelimiter("\r?\n").tokens().map(s -> {
                 System.out.format("s=%s\n", s);
 
-                final var list = Pattern.compile("-?\\d+").matcher(s).results().map(matchResult -> Integer.parseInt(matchResult.group())).collect(Collectors.toList());
-                System.out.format("list=%s\n", list);
-
-                var listRef = new AtomicReference<List<Integer>>();
-
-                var runningList = Stream.generate(() -> {
-                    final var oldList = listRef.get();
-
-                    List<Integer> newList;
-                    if (oldList == null) newList = list;
-                    else {
-                        newList = new ArrayList<>();
-                        for (var i = 0; i < oldList.size() - 1; i++)
-                            newList.add(oldList.get(i + 1) - oldList.get(i));
-                    }
-                    listRef.set(newList);
-
-                    System.out.format("\tnewList=%s\n", newList);
+                final var runningList = Stream.iterate(Pattern.compile("-?\\d+").matcher(s).results().map(matchResult -> Integer.parseInt(matchResult.group())).collect(Collectors.toList()), list -> list.stream().anyMatch(i -> i != 0), list -> {
+                    final var newList = new ArrayList<Integer>();
+                    for (var i = 0; i < list.size() - 1; i++)
+                        newList.add(list.get(i + 1) - list.get(i));
                     return newList;
-                }).takeWhile(newList -> newList.stream().anyMatch(i -> i != 0)).map(newList -> newList.get(newList.size() - 1)).collect(Collectors.toList());
+                }).map(list -> list.get(list.size() - 1)).collect(Collectors.toList());
 
                 for (var i = runningList.size() - 1; i >= 1; i--)
                     runningList.set(i - 1, runningList.get(i) + runningList.get(i - 1));

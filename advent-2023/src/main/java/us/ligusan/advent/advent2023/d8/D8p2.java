@@ -72,15 +72,14 @@ public class D8p2 {
         zNodesMap.values().stream().map(map -> map.values().stream().findFirst().get().get(0)).map(n -> {
             final var nRemainderRef = new AtomicInteger(n);
 
-            final var primeIndexRef = new AtomicInteger(0);
-            return Stream.generate(() -> {
+            return Stream.iterate(0, i -> i + 1).map(index -> {
                 final var primeSize = primes.size();
-                final var index = primeIndexRef.getAndIncrement();
                 if (index < primeSize) return primes.get(index);
                 else for (var nextPrime = primes.get(primeSize - 1) + 1; ; nextPrime++) {
                     final var nextPrimeFinal = nextPrime;
                     if (primes.stream().takeWhile(prime -> prime * prime <= nextPrimeFinal).anyMatch(prime -> nextPrimeFinal % prime == 0))
                         continue;
+
                     primes.add(nextPrime);
                     return nextPrime;
                 }

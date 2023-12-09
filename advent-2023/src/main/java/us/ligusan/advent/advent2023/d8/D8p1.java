@@ -1,11 +1,10 @@
 package us.ligusan.advent.advent2023.d8;
 
-import java.math.BigInteger;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 public class D8p1 {
     public static void main(final String[] args) {
