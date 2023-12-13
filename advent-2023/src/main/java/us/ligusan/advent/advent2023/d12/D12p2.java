@@ -35,7 +35,7 @@ public class D12p2 {
 
         if (list.isEmpty()) return s.indexOf('#') >= 0 ? BigInteger.ZERO : BigInteger.ONE;
         final var sNoDots = s.replace(".", "");
-        final var listSum = list.stream().reduce(Integer::sum).orElse(0);
+        final var listSum = list.stream().reduce(Integer::sum).get();
         if(sNoDots.length() < listSum) return BigInteger.ZERO;
         if(sNoDots.replace("?", "").length() > listSum) return BigInteger.ZERO;
 
