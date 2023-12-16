@@ -1,5 +1,7 @@
 package us.ligusan.advent.advent2023.d14;
 
+import us.ligusan.advent.advent2023.Direction;
+
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -117,6 +119,3 @@ public class D14p2 {
     }
 }
 
-enum Direction {
-    UP, LEFT, DOWN, RIGHT
-}
