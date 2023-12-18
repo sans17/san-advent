@@ -1,6 +1,7 @@
 package us.ligusan.advent.advent2023.d17;
 
 import us.ligusan.advent.advent2023.Direction;
+import us.ligusan.advent.advent2023.Point;
 
 import java.util.*;
 import java.util.stream.Collectors;
