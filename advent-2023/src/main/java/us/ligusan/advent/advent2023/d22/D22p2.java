@@ -1,6 +1,7 @@
 package us.ligusan.advent.advent2023.d22;
 
 import us.ligusan.advent.advent2023.Point;
+import us.ligusan.advent.advent2023.Point3;
 
 import java.util.*;
 import java.util.regex.Pattern;

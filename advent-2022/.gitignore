@@ -4,3 +4,5 @@
 bin/
 .classpath
 launch/
+
+src/main/resources/**/*.txt

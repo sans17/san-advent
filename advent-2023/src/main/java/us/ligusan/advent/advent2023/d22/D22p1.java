@@ -1,12 +1,11 @@
 package us.ligusan.advent.advent2023.d22;
 
 import us.ligusan.advent.advent2023.Point;
+import us.ligusan.advent.advent2023.Point3;
 
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class D22p1 {
     static List<Map.Entry<Point3, Point3>> DATA;
