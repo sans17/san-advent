@@ -25,9 +25,7 @@ public class D1p1 {
         right.sort(Integer::compareTo);
 
         var counter = 0;
-        for (int i = 0; i < left.size(); i++) {
-            counter += Math.abs(left.get(i) - right.get(i));
-        }
+        for(int i = 0; i < left.size(); i++) counter += Math.abs(left.get(i) - right.get(i));
         System.out.println(counter);
     }
 }
