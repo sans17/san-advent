@@ -1,18 +1,10 @@
 package us.ligusan.advent.advent2024.d5;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class D5p1 {
     public static void main(final String[] args) throws Exception {
@@ -27,9 +19,7 @@ public class D5p1 {
                 if(s.isBlank()) rulesFlagRef.set(false);
                 else {
                     var rulesFlag = rulesFlagRef.get();
-                    (rulesFlag ? rules : lists).add(
-                     Arrays.stream(s.split(rulesFlag ? "\\|" : ",")).map(Integer::parseInt)
-                      .collect(Collectors.toList()));
+                    (rulesFlag ? rules : lists).add(Arrays.stream(s.split(rulesFlag ? "\\|" : ",")).map(Integer::parseInt).toList());
                 }
             });
         }

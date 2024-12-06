@@ -5,8 +5,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 public class D5p2 {
     public static void main(final String[] args) throws Exception {
@@ -21,9 +19,7 @@ public class D5p2 {
                 if(s.isBlank()) rulesFlagRef.set(false);
                 else {
                     var rulesFlag = rulesFlagRef.get();
-                    (rulesFlag ? rules : lists).add(
-                     Arrays.stream(s.split(rulesFlag ? "\\|" : ",")).map(Integer::parseInt)
-                      .collect(Collectors.toList()));
+                    (rulesFlag ? rules : lists).add(Arrays.stream(s.split(rulesFlag ? "\\|" : ",")).map(Integer::parseInt).toList());
                 }
             });
         }
