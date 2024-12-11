@@ -1,55 +1,55 @@
 package us.ligusan.advent.advent2024.d9;
 
-import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 public class D9p2 {
     public static void main(final String[] args) throws Exception {
-        List<Map.Entry<Integer, Integer>> data;
+        var taken = new ArrayList<Map.Entry<Integer, Integer>>();
+        var free = new ArrayList<Map.Entry<Integer, Integer>>();
 
-        var counterRef = new AtomicInteger();
-        try(var scanner = new Scanner(D9p2.class.getResourceAsStream("input.txt"))) {
-            data = scanner.nextLine().chars().mapToObj(c -> {
-                var counter = counterRef.getAndIncrement();
-                return Map.entry(c - '0', counter % 2 == 0 ? counter / 2 : -1);
-            }).filter(e -> e.getKey() != 0 || e.getValue() >= 0).collect(Collectors.toList());
+        try(var scanner = new Scanner(D9p1.class.getResourceAsStream("input.txt"))) {
+            var indexRef = new AtomicInteger();
+            var counterRef = new AtomicInteger();
+            scanner.nextLine().chars().forEach(c -> {
+                var value = c - '0';
+                var takenFlag = indexRef.getAndIncrement() % 2 == 0;
+                if(takenFlag || value > 0) (takenFlag ? taken : free).add(Map.entry(counterRef.getAndAdd(value), value));
+            });
         }
-        System.out.println(data);
+        System.out.println(taken);
+        System.out.println(free);
 
-        for(int k = data.size() - 1; k >= 0; k--) {
-            var kEntry = data.get(k);
-            var kKey = kEntry.getKey();
-            if(kEntry.getValue() >= 0) {
-                for(int i = 0; i < k; i++) {
-                    var iEntry = data.get(i);
-                    if(iEntry.getValue() < 0) {
-                        var iKey = iEntry.getKey();
-                        if(kKey <= iKey) {
-                            data.set(k, Map.entry(kKey, -1));
-                            data.set(i, kEntry);
-                            if(kKey < iKey) {
-                                data.add(i + 1, Map.entry(iKey - kKey, -1));
-                                k++;
-                            }
-                            break;
-                        }
-                    }
+        var result = 0L;
+        for(int i = taken.size() - 1; i >= 0; i--) {
+            var takenEntry = taken.get(i);
+            var takenKey = takenEntry.getKey();
+            var takenValue = takenEntry.getValue();
+
+            var freeIndex = -1;
+            var freeKey = 0;
+            var freeValue = 0;
+            for(int j = 0; j < free.size(); j++) {
+                var freeEntry = free.get(j);
+                freeKey = freeEntry.getKey();
+                freeValue = freeEntry.getValue();
+                if(freeKey > takenKey) {
+                    break;
                 }
-//                System.out.format("k=%d, data=%s%n", k, data);
+                if(freeValue >= takenValue) {
+                    freeIndex = j;
+                    break;
+                }
             }
-        }
-        System.out.println(data);
 
-        long result = 0;
-        for(int counter = 0, i = 0; i < data.size(); i++) {
-            var entry = data.get(i);
-            var key = entry.getKey();
-            var value = entry.getValue();
-            if(value > 0) for(int j = 0; j < key; j++, counter++) result += counter * value;
-            else counter += key;
+            for(int k = 0; k < takenValue; k++) result += ((freeIndex < 0 ? takenKey : freeKey) + k) * i;
+
+            if(freeIndex >= 0) if(freeValue > takenValue) free.set(freeIndex, Map.entry(freeKey + takenValue, freeValue - takenValue));
+            else free.remove(freeIndex);
+
+//            System.out.format("i=%d, freeIndex=%d, result=%d, free=%s%n", i, freeIndex, result, free);
         }
         System.out.println(result);
     }

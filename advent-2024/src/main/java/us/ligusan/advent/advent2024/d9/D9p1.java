@@ -1,48 +1,49 @@
 package us.ligusan.advent.advent2024.d9;
 
+import java.util.ArrayList;
+import java.util.Map;
 import java.util.Scanner;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class D9p1 {
     public static void main(final String[] args) throws Exception {
-        String s;
+        var taken = new ArrayList<Map.Entry<Integer, Integer>>();
+        var free = new ArrayList<Map.Entry<Integer, Integer>>();
+
         try(var scanner = new Scanner(D9p1.class.getResourceAsStream("input.txt"))) {
-            s = scanner.nextLine();
+            var indexRef = new AtomicInteger();
+            var counterRef = new AtomicInteger();
+            scanner.nextLine().chars().forEach(c -> {
+                var value = c - '0';
+                var takenFlag = indexRef.getAndIncrement() % 2 == 0;
+                if(takenFlag || value > 0) (takenFlag ? taken : free).add(Map.entry(counterRef.getAndAdd(value), value));
+            });
         }
-        System.out.println(s);
+        System.out.println(taken);
+        System.out.println(free);
 
-        var sLength = s.length();
+        var result = 0L;
+        for(int i = taken.size() - 1, freeIndex = 0, freeKey = -1, freeValue = 0; i >= 0; i--) {
+            var takenEntry = taken.get(i);
+            for(int j = takenEntry.getValue(); j > 0; j--) {
+                var takenPos = takenEntry.getKey() + j - 1;
 
-        long result = 0;
-        var counter = 0;
-
-        var k = sLength - 1 - (sLength % 2 == 0 ? 1 : 0);
-        var j0 = 0;
-        var j1 = s.charAt(k) - '0';
-        for(int i = 0; i <= k; ) {
-            System.out.format("i=%d, k=%d, j0=%d, j1=%d%n", i, k, j0, j1);
-            if(i % 2 == 0) {
-                for(j0 = 0; j0 < (i < k ? s.charAt(i) - '0' : j1); j0++, counter++) {
-                    result += counter * (i / 2);
-                    System.out.format("0: j0=%d, j1=%d, counter=%d, result=%d%n", j0, j1, counter, result);
+                if(freeKey < 0) {
+                    var freeEntry = free.get(freeIndex);
+                    freeKey = freeEntry.getKey();
+                    freeValue = freeEntry.getValue();
                 }
-                i++;
-                j0 = 0;
-                continue;
-            }
 
-            for(; ; j0++, j1--, counter++) {
-                if(j0 >= s.charAt(i) - '0') {
-                    i++;
-                    j0 = 0;
-                    break;
+                var replaceFlag = takenPos > freeKey;
+                result += (replaceFlag ? freeKey : takenPos) * i;
+
+//                System.out.format("i=%d, j=%d, takenPos=%d, freeKey=%d, result=%d%n", i, j, takenPos, freeKey, result);
+
+                if(replaceFlag) if(--freeValue == 0) {
+                    freeIndex++;
+                    freeKey = -1;
                 }
-                if(j1 <= 0) {
-                    k -= 2;
-                    j1 = s.charAt(k) - '0';
-                    break;
-                }
-                result += counter * (k / 2);
-                System.out.format("1: j0=%d, j1=%d, counter=%d, result=%d%n", j0, j1, counter, result);
+                else freeKey++;
             }
         }
         System.out.println(result);
