@@ -23,27 +23,27 @@ public class D9p1 {
         System.out.println(free);
 
         var result = 0L;
-        for(int i = taken.size() - 1, freeIndex = 0, freeKey = -1, freeValue = 0; i >= 0; i--) {
+        for(int i = taken.size() - 1, freeIndex = 0, freePos = -1, freeValue = 0; i >= 0; i--) {
             var takenEntry = taken.get(i);
             for(int j = takenEntry.getValue(); j > 0; j--) {
                 var takenPos = takenEntry.getKey() + j - 1;
 
-                if(freeKey < 0) {
+                if(freePos < 0) {
                     var freeEntry = free.get(freeIndex);
-                    freeKey = freeEntry.getKey();
+                    freePos = freeEntry.getKey();
                     freeValue = freeEntry.getValue();
                 }
 
-                var replaceFlag = takenPos > freeKey;
-                result += (replaceFlag ? freeKey : takenPos) * i;
+                var replaceFlag = takenPos > freePos;
+                result += (replaceFlag ? freePos : takenPos) * i;
 
-//                System.out.format("i=%d, j=%d, takenPos=%d, freeKey=%d, result=%d%n", i, j, takenPos, freeKey, result);
+//                System.out.format("i=%d, j=%d, takenPos=%d, freePos=%d, result=%d%n", i, j, takenPos, freePos, result);
 
                 if(replaceFlag) if(--freeValue == 0) {
                     freeIndex++;
-                    freeKey = -1;
+                    freePos = -1;
                 }
-                else freeKey++;
+                else freePos++;
             }
         }
         System.out.println(result);
