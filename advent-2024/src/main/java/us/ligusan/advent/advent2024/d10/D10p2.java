@@ -35,6 +35,6 @@ public class D10p2 {
             }).mapToInt(Map.Entry::getValue).sum())).collect(Collectors.toUnmodifiableMap(Map.Entry::getKey, Map.Entry::getValue));
         }
 //        System.out.println(resultMap);
-        System.out.println(resultMap.values().stream().mapToInt(i -> i).sum());
+        System.out.println(resultMap.values().stream().reduce(Integer::sum).get());
     }
 }
