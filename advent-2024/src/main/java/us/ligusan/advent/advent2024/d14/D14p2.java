@@ -28,14 +28,15 @@ public class D14p2 {
         System.out.println(positions);
         System.out.println(velocities);
 
-        for (int i = 0, limit = 1; limit < 9; i++) {
-            var limitFinal = limit;
-            if (positions.stream().mapToInt(p -> {
+        for (int i = 0, limit = 0; limit < 9; i++) {
+            var max = positions.stream().mapToInt(p -> {
                 for (int yStart = p.getValue(), y = yStart; ; )
                     if (!positions.contains(Map.entry(p.getKey(), ++y))) return y - yStart;
-            }).anyMatch(l -> l >= limitFinal)) {
-                System.out.format("i=%d, limit=%d%n", i, limit);
-                limit++;
+            }).max().getAsInt();
+
+            if (max > limit) {
+                System.out.format("i=%d, limit=%d, max=%d%n", i, limit, max);
+                limit = max;
 
                 for (int y = 0; y < ySize; y++) {
                     var finalY = y;
