@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -40,7 +41,7 @@ public class D16p2 {
         System.out.format("end=%s, walls=%s, paths=%s%n", end, walls, paths);
 
         var computed = new HashMap<Map.Entry<Map.Entry<Integer, Integer>, Map.Entry<Integer, Integer>>, Integer>();
-        var allBestPathes = new HashMap<Map.Entry<Map.Entry<Integer, Integer>, Map.Entry<Integer, Integer>>, List<List<Map.Entry<Map.Entry<Integer, Integer>, Map.Entry<Integer, Integer>>>>>();
+        var allBestLocationsMap = new HashMap<Map.Entry<Map.Entry<Integer, Integer>, Map.Entry<Integer, Integer>>, Set<Map.Entry<Integer, Integer>>>();
 
         List<Map.Entry<Map.Entry<Integer, Integer>, Map.Entry<Integer, Integer>>> shortestPath = null;
         Integer shortestPathScore = null;
@@ -64,7 +65,7 @@ public class D16p2 {
             var bestScore = computed.get(position);
             if(bestScore == null || bestScore.equals(score)) {
                 if(bestScore == null) computed.put(position, score);
-                allBestPathes.computeIfAbsent(position, _ -> new ArrayList<>()).add(path);
+                allBestLocationsMap.computeIfAbsent(position, _ -> new HashSet<>()).addAll(path.stream().map(Map.Entry::getKey).toList());
             }
             if(bestScore != null) continue;
 
@@ -96,7 +97,7 @@ public class D16p2 {
             }).forEach(paths::add);
         }
 
-        var allBestPathesLocations = shortestPath.stream().flatMap(e -> allBestPathes.get(e).stream().flatMap(l -> l.stream().map(Map.Entry::getKey))).collect(Collectors.toSet());
+        var allBestPathesLocations = shortestPath.stream().flatMap(e -> allBestLocationsMap.get(e).stream()).collect(Collectors.toSet());
 
         System.out.println(shortestPath);
         System.out.println(allBestPathesLocations);
