@@ -43,7 +43,7 @@ public class D16p2 {
         var computed = new HashMap<Map.Entry<Map.Entry<Integer, Integer>, Map.Entry<Integer, Integer>>, Integer>();
         var allBestLocationsMap = new HashMap<Map.Entry<Map.Entry<Integer, Integer>, Map.Entry<Integer, Integer>>, Set<Map.Entry<Integer, Integer>>>();
 
-        List<Map.Entry<Map.Entry<Integer, Integer>, Map.Entry<Integer, Integer>>> shortestPath = null;
+        var shortestPaths = new ArrayList<List<Map.Entry<Map.Entry<Integer, Integer>, Map.Entry<Integer, Integer>>>>();
         Integer shortestPathScore = null;
 
         for(var i = 0; ; i++) {
@@ -71,8 +71,9 @@ public class D16p2 {
 
             var location = position.getKey();
             if(location.equals(end)) {
-                shortestPath = path;
-                shortestPathScore = score;
+                shortestPaths.add(path);
+                if(shortestPathScore == null) shortestPathScore = score;
+                continue;
             }
 
             var x = location.getKey();
@@ -97,9 +98,9 @@ public class D16p2 {
             }).forEach(paths::add);
         }
 
-        var allBestPathesLocations = shortestPath.stream().flatMap(e -> allBestLocationsMap.get(e).stream()).collect(Collectors.toSet());
+        var allBestPathesLocations = shortestPaths.stream().flatMap(p -> p.stream().flatMap(e -> allBestLocationsMap.get(e).stream())).collect(Collectors.toSet());
 
-        System.out.println(shortestPath);
+        System.out.println(shortestPaths);
         System.out.println(allBestPathesLocations);
 
         for(int i = 0; i < yIndex; i++) {
