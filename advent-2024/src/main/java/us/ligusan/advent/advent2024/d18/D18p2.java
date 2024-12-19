@@ -28,46 +28,58 @@ public class D18p2 {
                 data.get(Integer.parseInt(m.group(2))).set(Integer.parseInt(m.group(1)), -1);
             }
 
-            for (; ; ) {
-                for (var l : data)
-                    for (int i = 0; i <= sizeLimit; i++) {
-                        var v = l.get(i);
-                        if (v != null && v > 0) l.set(i, null);
-                    }
-
+            for (; ; j++) {
                 var s = scanner.nextLine();
                 System.out.println(s);
                 var m = Pattern.compile("(\\d+),(\\d+)").matcher(s);
                 m.find();
-                data.get(Integer.parseInt(m.group(2))).set(Integer.parseInt(m.group(1)), -1);
+                var corruptedX = Integer.parseInt(m.group(1));
+                var corruptedY = Integer.parseInt(m.group(2));
 
-                for (var edge = Set.of(Map.entry(sizeLimit, sizeLimit)); !edge.isEmpty() && !edge.contains(start); ) {
-                    edge = edge.stream().flatMap(e -> {
-                        var x = e.getKey();
-                        var y = e.getValue();
-                        return Stream.of(Map.entry(x - 1, y), Map.entry(x + 1, y), Map.entry(x, y - 1), Map.entry(x, y + 1));
-                    }).filter(e -> {
-                        var x = e.getKey();
-                        var y = e.getValue();
-                        return x >= 0 && x <= sizeLimit && y >= 0 && y <= sizeLimit;
-                    }).filter(e -> data.get(e.getValue()).get(e.getKey()) == null).collect(Collectors.toSet());
+                var corruptedValue = data.get(corruptedY).get(corruptedX);
+                data.get(corruptedY).set(corruptedX, -1);
 
-                    edge.stream().collect(Collectors.toMap(e -> e, e -> {
-                        var x = e.getKey();
-                        var y = e.getValue();
-                        return Stream.of(Map.entry(x - 1, y), Map.entry(x + 1, y), Map.entry(x, y - 1), Map.entry(x, y + 1)).filter(e1 -> {
-                            var x1 = e1.getKey();
-                            var y1 = e1.getValue();
-                            return x1 >= 0 && x1 <= sizeLimit && y1 >= 0 && y1 <= sizeLimit;
-                        }).map(e1 -> data.get(e1.getValue()).get(e1.getKey())).filter(v -> v != null && v >= 0).min(Integer::compareTo).get();
-                    })).forEach((e, v) -> data.get(e.getValue()).set(e.getKey(), v + 1));
-                }
+                if (corruptedValue != null && corruptedValue > 0 || j == end) {
+                    Set<Map.Entry<Integer, Integer>> edge = new HashSet<>();
+                    if (j == end) edge.add(Map.entry(sizeLimit, sizeLimit));
+                    else for (int i = 0; i <= sizeLimit; i++) {
+                        var l = data.get(i);
+                        for (int k = 0; k <= sizeLimit; k++) {
+                            var v = l.get(k);
+                            if (v != null && v >= corruptedValue)
+                                if (v.equals(corruptedValue)) edge.add(Map.entry(k, i));
+                                else l.set(k, null);
+                        }
+                    }
 
-                for (var l : data) System.out.println(l);
+                    while (!edge.isEmpty() && !edge.contains(start)) {
+                        edge = edge.stream().flatMap(e -> {
+                            var x = e.getKey();
+                            var y = e.getValue();
+                            return Stream.of(Map.entry(x - 1, y), Map.entry(x + 1, y), Map.entry(x, y - 1), Map.entry(x, y + 1));
+                        }).filter(e -> {
+                            var x = e.getKey();
+                            var y = e.getValue();
+                            return x >= 0 && x <= sizeLimit && y >= 0 && y <= sizeLimit;
+                        }).filter(e -> data.get(e.getValue()).get(e.getKey()) == null).collect(Collectors.toSet());
 
-                if (data.getFirst().getFirst() == null) {
-                    System.out.println(s);
-                    break;
+                        edge.stream().collect(Collectors.toMap(e -> e, e -> {
+                            var x = e.getKey();
+                            var y = e.getValue();
+                            return Stream.of(Map.entry(x - 1, y), Map.entry(x + 1, y), Map.entry(x, y - 1), Map.entry(x, y + 1)).filter(e1 -> {
+                                var x1 = e1.getKey();
+                                var y1 = e1.getValue();
+                                return x1 >= 0 && x1 <= sizeLimit && y1 >= 0 && y1 <= sizeLimit;
+                            }).map(e1 -> data.get(e1.getValue()).get(e1.getKey())).filter(v -> v != null && v >= 0).min(Integer::compareTo).get();
+                        })).forEach((e, v) -> data.get(e.getValue()).set(e.getKey(), v + 1));
+                    }
+
+                    for (var l : data) System.out.println(l);
+
+                    if (data.getFirst().getFirst() == null) {
+                        System.out.println(s);
+                        break;
+                    }
                 }
             }
         }
