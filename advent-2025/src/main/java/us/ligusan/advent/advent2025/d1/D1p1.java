@@ -30,7 +30,7 @@ public class D1p1
 
                 pointer.set(p);
 
-                System.out.printf("%d %s : %d", pStart, s, p);
+                System.out.printf("%d %s : %d%n", pStart, s, p);
             });
         }
 
